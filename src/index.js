@@ -365,7 +365,6 @@ function handleKeyPress(e) {
 // Toggle pause
 function togglePause() {
   isPaused = !isPaused;
-  document.getElementById("status").textContent = isPaused ? "Paused" : "Playing...";
 }
 
 // End game
