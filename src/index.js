@@ -3,6 +3,9 @@ const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = 30;
 const PATTERN_SIZE = 5;
+const INITIAL_DROP_INTERVAL = 1000;
+const MIN_DROP_INTERVAL = 200;
+const LEVEL_DROP_DECREASE = 100;
 
 // Colors for blocks (dev-themed)
 const COLORS = {
@@ -44,7 +47,7 @@ let patternsCleared = 0;
 let gameOver = false;
 let isPaused = false;
 let dropCounter = 0;
-let dropInterval = 1000;
+let dropInterval = INITIAL_DROP_INTERVAL;
 let lastTime = 0;
 let targetPattern = null;
 
@@ -64,7 +67,8 @@ function init() {
   setNewTargetPattern();
 
   // Load high score from localStorage
-  highScore = parseInt(localStorage.getItem("stackOverflownHighScore")) || 0;
+  const storedHighScore = parseInt(localStorage.getItem("stackOverflownHighScore"));
+  highScore = Number.isFinite(storedHighScore) && storedHighScore >= 0 ? storedHighScore : 0;
   document.getElementById("high-score").textContent = highScore;
 
   // Spawn first piece
@@ -279,7 +283,7 @@ function checkPatternMatch() {
         patternsCleared++;
         if (patternsCleared % 5 === 0) {
           level++;
-          dropInterval = Math.max(200, 1000 - (level - 1) * 100);
+          dropInterval = Math.max(MIN_DROP_INTERVAL, INITIAL_DROP_INTERVAL - (level - 1) * LEVEL_DROP_DECREASE);
           document.getElementById("level").textContent = level;
         }
         updateScore();
